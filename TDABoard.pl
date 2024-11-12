@@ -123,7 +123,75 @@ construir_tablero([A|B],Columna,Piece,Cont,[A|NewBoard2]):-
 
 %------------------------ play_piece ---------------------------%
 
-
+% Coloca una pieza en la columna escogida en la posicion mas baja, en
+% caso de que la columna este llena, tira error (*Corregir esto para que
+% retorne la columna sin cambios)
+%
+% Dominio: TDA BOard, int, TDA piece,
+% Recorrido: TDA Board
 play_piece(Board, Column, Piece, NewBoard):-
     construir_tablero(Board,Column,Piece,0,NewBoard).
+
+%-------------------------Vertical_win---------------------------%
+
+repetido4([],Cont,Winner):-
+    Cont==4,
+    Winner.
+
+repetido4([A|_],Cont,Winner):-
+    Cont==4,
+    getJugadorB(A,Winner).
+
+repetido4([A|B],Cont,Winner):-
+    my_car(B,Car),
+    A==Car,
+    Cont2 is Cont+1,
+    repetido4(B,Cont2,Winner).
+
+repetido4([A|B],_,Winner):-
+    getJugadorB(A,Aux),
+    Aux==0,
+    repetido4(B,1,Winner).
+
+repetido4([_|B],_,Winner):-
+    repetido4(B,1,Winner).
+
+
+vertical_win([],0).
+
+vertical_win([Column|_],Winner):-
+    repetido4(Column,1,Winner),
+    Winner\==0.
+
+vertical_win([_|Board],Winner):-
+    vertical_win(Board,Winner).
+
+%-------------------------Horizontal_win------------------------&
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
