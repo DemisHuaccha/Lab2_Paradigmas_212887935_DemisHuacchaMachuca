@@ -167,8 +167,37 @@ vertical_win([_|Board],Winner):-
     vertical_win(Board,Winner).
 
 %-------------------------Horizontal_win------------------------&
+% Se usa obtener_columna para obtener el elemento de la fila pedida, ya
+% que el predicado permite obtener los resultados esperados
 
 
+fila([],_,[]).
+
+
+fila([A|B],Fila,[F|LR]):-
+    obtener_columna(A,Fila,F),
+    fila(B,Fila,LR).
+
+construir_filas(_,6,[]).
+
+construir_filas(Board,Cont,[F|LR]):-
+    fila(Board,Cont,F),
+    Cont2 is Cont+1,
+    construir_filas(Board,Cont2,LR).
+
+
+horizontal_win2([],0).
+
+horizontal_win2([Fila|_],Winner):-
+    repetido4(Fila,1,Winner),
+    Winner\==0.
+
+horizontal_win2([_|Board2],Winner):-
+    horizontal_win2(Board2,Winner).
+
+horizontal_win(Board,Winner):-
+    construir_filas(Board,0,BoardFilas),
+    horizontal_win2(BoardFilas,Winner).
 
 
 
