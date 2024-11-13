@@ -1,5 +1,3 @@
-
-
 %getC1que entrega la primera columna del TDA Board
 %Dominio : TDA board
 %REcorrido: una lista (Columna)
@@ -60,7 +58,8 @@ getJugadorB([A],J):-
     A == 0,
     J = 0.
 
-getJugadorB([_|J],J).
+getJugadorB([_|J],J2):-
+    my_car(J,J2).
 
 
 %Constructor del TDA Board que entraga una lista de listas
@@ -118,7 +117,6 @@ construir_tablero([A|B],Columna,Piece,Cont,[NewColumn|B]):-
 
 construir_tablero([A|B],Columna,Piece,Cont,[A|NewBoard2]):-
     Cont2 is Cont+1,
-    write(Cont2),
     construir_tablero(B,Columna,Piece,Cont2,NewBoard2).
 
 %------------------------ play_piece ---------------------------%
@@ -129,14 +127,14 @@ construir_tablero([A|B],Columna,Piece,Cont,[A|NewBoard2]):-
 %
 % Dominio: TDA BOard, int, TDA piece,
 % Recorrido: TDA Board
+%
 play_piece(Board, Column, Piece, NewBoard):-
     construir_tablero(Board,Column,Piece,0,NewBoard).
 
 %-------------------------Vertical_win---------------------------%
 
-repetido4([],Cont,Winner):-
-    Cont==4,
-    Winner.
+repetido4([],_,0).
+
 
 repetido4([A|_],Cont,Winner):-
     Cont==4,
@@ -157,14 +155,17 @@ repetido4([_|B],_,Winner):-
     repetido4(B,1,Winner).
 
 
-vertical_win([],0).
+vertical_win([],0):-!.
 
 vertical_win([Column|_],Winner):-
     repetido4(Column,1,Winner),
-    Winner\==0.
+    Winner\==0,
+    !.
 
-vertical_win([_|Board],Winner):-
-    vertical_win(Board,Winner).
+vertical_win([Column|B],Winner):-
+    repetido4(Column,1,Winner2),
+    Winner2==0,
+    vertical_win(B,Winner).
 
 %-------------------------Horizontal_win------------------------&
 % Se usa obtener_columna para obtener el elemento de la fila pedida, ya
@@ -186,22 +187,24 @@ construir_filas(Board,Cont,[F|LR]):-
     construir_filas(Board,Cont2,LR).
 
 
-horizontal_win2([],0).
 
-horizontal_win2([Fila|_],Winner):-
-    repetido4(Fila,1,Winner),
-    Winner\==0.
 
-horizontal_win2([_|Board2],Winner):-
-    horizontal_win2(Board2,Winner).
+horizontal_win2([],0):-!.
+
+horizontal_win2([Column|_],Winner):-
+    repetido4(Column,1,Winner),
+    Winner\==0,
+    !.
+
+horizontal_win2([Column|B],Winner):-
+    repetido4(Column,1,Winner2),
+    Winner2==0,
+    horizontal_win2(B,Winner).
+
 
 horizontal_win(Board,Winner):-
     construir_filas(Board,0,BoardFilas),
     horizontal_win2(BoardFilas,Winner).
-
-
-
-
 
 
 
