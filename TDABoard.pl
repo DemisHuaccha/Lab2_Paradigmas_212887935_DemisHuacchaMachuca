@@ -131,7 +131,12 @@ construir_tablero([A|B],Columna,Piece,Cont,[A|NewBoard2]):-
 play_piece(Board, Column, Piece, NewBoard):-
     construir_tablero(Board,Column,Piece,0,NewBoard).
 
-%-------------------------Vertical_win---------------------------%
+%-------------------------Repetido4---------------------------%
+% repetido4 toma una lista y verifica si existen 4 elementos
+% consecutivos
+% Dominio:Lista, contador(int)
+% Recorrido: int
+% recursion de cola
 
 repetido4([],_,0).
 
@@ -154,6 +159,14 @@ repetido4([A|B],_,Winner):-
 repetido4([_|B],_,Winner):-
     repetido4(B,1,Winner).
 
+%-------------------------Vertical_win---------------------------%
+% vertical_win verifica si en alguna columna existe una pieza que se
+% repita 4 veces consecutivamente
+% Dominio: Board (TDA board)
+% Recorrido: Winner(int)
+% Recursion de cola
+
+
 
 vertical_win([],0):-!.
 
@@ -167,10 +180,17 @@ vertical_win([Column|B],Winner):-
     Winner2==0,
     vertical_win(B,Winner).
 
-%-------------------------Horizontal_win------------------------&
-% Se usa obtener_columna para obtener el elemento de la fila pedida, ya
-% que el predicado permite obtener los resultados esperados
+%-------------------------Fila y construir_filas-----------------------&
+%
+%
+%
 
+
+
+% Fila usa obtener_columna para obtener el elemento de la fila pedida,
+% ya que el predicado permite obtener los resultados esperados fila,a
+% partir de eso, se toma el tablero y nos entregara la fila que
+% pidamos
 
 fila([],_,[]).
 
@@ -179,6 +199,9 @@ fila([A|B],Fila,[F|LR]):-
     obtener_columna(A,Fila,F),
     fila(B,Fila,LR).
 
+% construir_filas nos entregara el tablero(que esta compuesto por listas
+% que son columnas) con las filas
+
 construir_filas(_,6,[]).
 
 construir_filas(Board,Cont,[F|LR]):-
@@ -186,6 +209,13 @@ construir_filas(Board,Cont,[F|LR]):-
     Cont2 is Cont+1,
     construir_filas(Board,Cont2,LR).
 
+
+%-------------------------horizontal_win---------------------------%
+% horizontal_win verifica si en alguna fila existe una pieza que se
+% repita 4 veces consecutivamente
+% Dominio: Board (TDA board)
+% Recorrido: Winner(int)
+% Recursion de cola
 
 
 
@@ -208,12 +238,172 @@ horizontal_win(Board,Winner):-
 
 
 
+% -----------primero,segundo,tercero,cuarto / diagonales----------%
+% Las clausulas primero,segunfo,tercero y cuarto tienen el mismo dominio
+% y recorrido
+%Dominio:Board(TDABoard), Y int , X int
+%Recorrido:Lista de disgonales
+%
+% primeroDiagonal entrega las diagonales de izquierda-derecha y
+% arriba-abajo comenzando desde posicion vertical mas baja (fila 6)
+% hasta llegar a la posicion mas alta
+%
+% segundaDiagonal entrega las diagonales de izquieda-derecha y
+% arriba-abajo comenzando desde la posicion horizontal mas cercana a 0
+% hasta la mas lejana(la columna 7)
+%
+% terceroDiagonal entraga las diagonales de derecha-izquierda y
+% arriba-abajo comenzando desde la posicion vertical mas baja(Fila 6) y
+% desde la columna mas lejana(Columna 7), hasta la fila mas alta (Fila
+% 0)
+%
+% cuartaDiagonal entrega las diagonales de derecha-izquierda y
+% arriba-abajo comenzando desde la la columna mas lejana (Columna 7)
+% hasta la primera columna
+%
+% Todas tiene una clausula auxiliar para recorrer y construir la
+% una diagonal especifica
+
+
+primero(_,Y,_,[]):-
+    Y==6,
+    !.
+
+primero([A|B],Y,X,[Elem|LR]):-
+    obtener_columna([A|B],X,Column),
+    obtener_columna(Column,Y,Elem),
+    Y2 is Y+1,
+    X2 is X+1,
+    primero([A|B],Y2,X2,LR).
+
+
+primeraDiagonal([A|B],Y,X,[LR]):-
+    Y==0,
+    primero([A|B],0,X,LR),
+    !.
+
+primeraDiagonal([A|B],Y,X,[L|LR]):-
+    primero([A|B],Y,X,L),
+    Y2 is Y-1,
+    primeraDiagonal([A|B],Y2,X,LR).
+
+
+segundo(_,_,X,[]):-
+    X==7,
+    !.
+
+segundo(_,Y,_,[]):-
+    Y==6,
+    !.
+
+segundo([A|B],Y,X,[Elem|LR]):-
+    obtener_columna([A|B],X,Column),
+    obtener_columna(Column,Y,Elem),
+    Y2 is Y+1,
+    X2 is X+1,
+    segundo([A|B],Y2,X2,LR).
+
+segundaDiagonal([A|B],Y,X,[LR]):-
+    X==6,
+    segundo([A|B],Y,6,LR),
+    !.
+
+segundaDiagonal([A|B],Y,X,[L|LR]):-
+    segundo([A|B],Y,X,L),
+    X2 is X+1,
+    segundaDiagonal([A|B],Y,X2,LR).
+
+
+tercer(_,Y,_,[]):-
+    Y==6,
+    !.
+
+tercer([A|B],Y,X,[Elem|LR]):-
+    obtener_columna([A|B],X,Column),
+    obtener_columna(Column,Y,Elem),
+    Y2 is Y+1,
+    X2 is X-1,
+    tercer([A|B],Y2,X2,LR).
+
+
+terceraDiagonal([A|B],Y,X,[LR]):-
+    Y==0,
+    tercer([A|B],0,X,LR),
+    !.
+
+terceraDiagonal([A|B],Y,X,[L|LR]):-
+    tercer([A|B],Y,X,L),
+    Y2 is Y-1,
+    terceraDiagonal([A|B],Y2,X,LR).
+
+
+cuarto(_,_,X,[]):-
+    X<0,
+    !.
+
+cuarto(_,Y,_,[]):-
+    Y==6,
+    !.
+
+cuarto([A|B],Y,X,[Elem|LR]):-
+    obtener_columna([A|B],X,Column),
+    obtener_columna(Column,Y,Elem),
+    Y2 is Y+1,
+    X2 is X-1,
+    cuarto([A|B],Y2,X2,LR).
+
+cuartaDiagonal([A|B],Y,X,[LR]):-
+    X==0,
+    cuarto([A|B],Y,X,LR),
+    !.
+
+cuartaDiagonal([A|B],Y,X,[L|LR]):-
+    cuarto([A|B],Y,X,L),
+    X2 is X-1,
+    cuartaDiagonal([A|B],Y,X2,LR).
+
+%-------------------------diagonales---------------------------%
+% Diagonales toma un tablero y en una lista almacena todas las
+% diagonales posibles
+%Dominio: Board (TDA board) Recorrido:
+% diagonales(lista de listas)
+
+
+diagonales(Board,Diagonales):-
+    primeraDiagonal(Board,5,0,DiagC1),
+    segundaDiagonal(Board,0,0,DiagC2),
+    terceraDiagonal(Board,5,6,DiagC3),
+    cuartaDiagonal(Board,0,6,DiagC4),
+    append(DiagC1,DiagC2,Aux1),
+    append(Aux1,DiagC3,Aux2),
+    append(Aux2,DiagC4,Diagonales).
+
+% ------------------------------------------------------------------------
+% %-------------------------diagonal_win---------------------------%
+% diagonal_win verifica si en alguna diagonal existe una pieza que se
+% repita 4 veces consecutivamente
+% Dominio: Board (TDA board)
+% Recorrido: Winner(int)
+% Recursion de cola
 
 
 
+diagonal_win2([],0):-!.
+
+diagonal_win2([Diagonal|_],Winner):-
+    repetido4(Diagonal,1,Winner),
+    Winner\==0,
+    !.
+
+diagonal_win2([Diagonal|B],Winner):-
+    repetido4(Diagonal,1,Winner2),
+    Winner2==0,
+    diagonal_win2(B,Winner).
 
 
-
+diagonal_win([A|B],Winner):-
+    diagonales([A|B],Diagonales),
+    diagonal_win2(Diagonales,Winner).
 
 
 
