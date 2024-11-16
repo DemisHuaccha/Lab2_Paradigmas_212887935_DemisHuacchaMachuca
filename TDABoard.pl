@@ -378,7 +378,6 @@ diagonales(Board,Diagonales):-
     append(Aux1,DiagC3,Aux2),
     append(Aux2,DiagC4,Diagonales).
 
-% ------------------------------------------------------------------------
 % %-------------------------diagonal_win---------------------------%
 % diagonal_win verifica si en alguna diagonal existe una pieza que se
 % repita 4 veces consecutivamente
@@ -405,7 +404,27 @@ diagonal_win([A|B],Winner):-
     diagonales([A|B],Diagonales),
     diagonal_win2(Diagonales,Winner).
 
+ %-------------------------diagonal_win---------------------------%
+% who_is_winner verifica si existe una pieza que se
+% repita 4 veces consecutivamente y retorna el id del ganador
+% Dominio: Board (TDA board)
+% Recorrido: Winner(int)
+% Recursion de cola
 
+
+who_is_winner([A|B],Winner):-
+    vertical_win([A|B],Winner),
+    Winner\==0.
+
+who_is_winner([A|B],Winner):-
+    horizontal_win([A|B],Winner),
+    Winner\==0.
+
+who_is_winner([A|B],Winner):-
+    diagonal_win([A|B],Winner),
+    Winner\==0.
+
+who_is_winner(_,0).
 
 
 
