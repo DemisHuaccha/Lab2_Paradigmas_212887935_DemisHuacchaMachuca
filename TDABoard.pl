@@ -1,4 +1,6 @@
 %getC1que entrega la primera columna del TDA Board
+:-include("TDAPlayer").
+
 %Dominio : TDA board
 %REcorrido: una lista (Columna)
 getC1([C1|_],C1).

@@ -1,3 +1,4 @@
+:-include("TDAPiece").
 
 %Funcion que entrega el primer elemento del TDA Player
 getIdPlayer([Id|_],Id).  %Dominio: TDA Player, Recorrido : int
@@ -35,6 +36,13 @@ player(Id, Name, Color, Wins, Losses, Draws, RemainingPieces, Player):-
     Player= [Id, Name, Color, Wins, Losses, Draws, RemainingPieces].
 
 
+
+%---------------------------update_stats---------------------------%
+% Se toma al jugador y se actualiza sus datos de victoria,derrota o
+% empate
+%Dominio:TDA Game Recorrido: TDA Player
+
+%update_stats(Player,OdlStats,NewStasts):-
 
 
 
