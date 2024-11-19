@@ -36,14 +36,37 @@ player(Id, Name, Color, Wins, Losses, Draws, RemainingPieces, Player):-
     Player= [Id, Name, Color, Wins, Losses, Draws, RemainingPieces].
 
 
+%--------------------------update_piece--------------------------%
+%Reduce la cantidad de piezas en el jugador en 1
+%Dominio:TDA Player
+%Recorrido: TDA Player
+%update_piece(Player,NewPlayer)
 
-%---------------------------update_stats---------------------------%
+update_pieces([Id,Name,Color,Wins,Losses,Draws,Pieces],[Id,Name,Color,Wins,Losses,Draws,Pieces2]):-
+    Pieces2 is Pieces-1.
+
+
+%---------------------------UpdateStats---------------------------%
 % Se toma al jugador y se actualiza sus datos de victoria,derrota o
 % empate
 %Dominio:TDA Game Recorrido: TDA Player
 
 %update_stats(Player,OdlStats,NewStasts):-
 
+
+
+% --------------------------update----------------------------------------%
+% Dominio: TDA Player
+% Recorrido: TDA Player
+% update(Player,NewPlayer):-
+update_wins([Id,Name,Color,Wins|L],[Id,Name,Color,Wins2|L]):-
+    Wins2 is Wins+1.
+
+update_losses([Id,Name,Color,Wins,Losses|L],[Id,Name,Color,Wins,Losses2|L]):-
+    Losses2 is Losses+1.
+
+update_draws([Id,Name,Color,Wins,Losses,Draws,Pieces],[Id,Name,Color,Wins,Losses,Draws2,Pieces]):-
+    Draws2 is Draws+1.
 
 
 

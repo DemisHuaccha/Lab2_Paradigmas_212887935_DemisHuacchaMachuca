@@ -1,6 +1,6 @@
-%getC1que entrega la primera columna del TDA Board
 :-include("TDAPlayer").
 
+%getC1que entrega la primera columna del TDA Board
 %Dominio : TDA board
 %REcorrido: una lista (Columna)
 getC1([C1|_],C1).
@@ -413,20 +413,22 @@ diagonal_win([A|B],Winner):-
 % Recorrido: Winner(int)
 % Recursion de cola
 
+ganador(Winner1,_,_,Winner):-
+    Winner1\==0,
+    Winner = Winner1.
+ganador(_,Winner2,_,Winner):-
+    Winner2\==0,
+    Winner = Winner2.
+ganador(_,_,Winner3,Winner):-
+    Winner3\==0,
+    Winner = Winner3.
+ganador(0,0,0,0).
 
-who_is_winner([A|B],Winner):-
-    vertical_win([A|B],Winner),
-    Winner\==0.
-
-who_is_winner([A|B],Winner):-
-    horizontal_win([A|B],Winner),
-    Winner\==0.
-
-who_is_winner([A|B],Winner):-
-    diagonal_win([A|B],Winner),
-    Winner\==0.
-
-who_is_winner(_,0).
+who_is_winner(Board,Winner):-
+    vertical_win(Board,Winner1),
+    horizontal_win(Board,Winner2),
+    diagonal_win(Board,Winner3),
+    ganador(Winner1,Winner2,Winner3,Winner).
 
 
 
