@@ -30,23 +30,21 @@ game(Player,Player2,Board,CurrentTurn,Game):-
 % Nos dice si en el juego hay un empate, es decir que no existan mas
 % jugadas posibles y que haya un ganador o que los jugadores no tengan
 % mas piezas
-% Dominio:TDAGame Recorrido:Boolean
+% Dominio:TDAGame
+% Recorrido:Boolean
 
-is_draw(Game):-
-    getBoardG(Game,Board),
-    who_is_winner(Board,Winner),
-    Winner==0,
-    not(can_play(Board)).
-
-is_draw(Game):-
-    getBoardG(Game,Board),
-    nor(can_play(Board)).
 
 is_draw([_,Player1,Player2|_]):-
-    getRemainingPieces(Player1,R1),
-    getRemainingPieces(Player2,R2),
+    getRemainingPiecesPlayer(Player1,R1),
+    getRemainingPiecesPlayer(Player2,R2),
     R1==0,
-    R2==0.
+    R2==0,
+    !.
+
+is_draw([Board|_]):-
+    not(can_play(Board)),
+    !.
+
 
 
 
@@ -91,7 +89,7 @@ game_get_board2([A|B]):-
 imprimirVertical([],[],[],[],[],[],[]):-!.
 
 imprimirVertical([A1|B1],[A2|B2],[A3|B3],[A4|B4],[A5|B5],[A6|B6],[A7|B7]):-
-    write(A1 ; A2 ; A3 ; A4 ; A5 ; A6 ; A7),
+    write(A1     ;     A2    ;     A3    ;    A4    ;    A5    ;    A6    ;    A7),
     nl,
     imprimirVertical(B1,B2,B3,B4,B5,B6,B7).
 
@@ -108,25 +106,31 @@ imprimirVertical([A1|B1],[A2|B2],[A3|B3],[A4|B4],[A5|B5],[A6|B6],[A7|B7]):-
 %update_stats(Game,OdlStats,NewStasts):-
 %OldStats jugadores sin las estadisticas actualizadas
 %NewStats jugadores con las estadisticas actualizadas
-%
-update_stats([Board,Player1,Player2|_],[Player1,Player2],[NewPlayer1,NewPlayer2]):-
+
+update_stats([Board,Player1A,Player2A|_],[Player1,_],[NewPlayer1,NewPlayer2]):-
     who_is_winner(Board,Winner),
     getIdPlayer(Player1,Id1),
     Id1==Winner,
-    update_wins(Player1,NewPlayer1),
-    update_losses(Player2,NewPlayer2).
+    update_wins(Player1A,NewPlayer1),
+    update_losses(Player2A,NewPlayer2),
+    !.
 
-update_stats([Board,Player1,Player2|_],[Player1,Player2],[NewPlayer1,NewPlayer2]):-
+update_stats([Board,Player1A,Player2A|_],[_,Player2],[NewPlayer1,NewPlayer2]):-
     who_is_winner(Board,Winner),
     getIdPlayer(Player2,Id2),
     Id2==Winner,
-    update_wins(Player2,NewPlayer2),
-    update_losses(Player1,NewPlayer1).
+    update_wins(Player2A,NewPlayer2),
+    update_losses(Player1A,NewPlayer1),
+    !.
 
-update_stats([Board,Player1,Player2|_],[Player1,Player2],[NewPlayer1,NewPlayer2]):-
-    is_draw(Board),
-    update_draws(Player1,NewPlayer1),
-    update_draws(Player2,NewPlayer2).
+update_stats([Board,Player1A,Player2A|L],[Player1,Player2],[NewPlayer1,NewPlayer2]):-
+    is_draw([Board,Player1,Player2|L]),
+    update_draws(Player1A,NewPlayer1),
+    update_draws(Player2A,NewPlayer2),
+    !.
+
+update_stats(_,[Player1,Player2],[Player1,Player2]):-!.
+
 
 %----------------------------end_game--------------------------%
 %
@@ -138,7 +142,11 @@ end_game([Board,Player1,Player2|L],[Board,NewP1,NewP2|L]):-
     update_stats([Board,Player1,Player2|L],[Player1,Player2],NewPlayers),
     my_car(NewPlayers,NewP1),
     my_cdr(NewPlayers,Cdr),
-    my_car(Cdr,NewP2).
+    my_car(Cdr,NewP2),
+    !.
+
+%end_game([Board,Player1,Player2|L],[Board,Player1,Player2|L]):-!.
+
 
 
 
@@ -152,103 +160,154 @@ end_game([Board,Player1,Player2|L],[Board,NewP1,NewP2|L]):-
 
 % --------------------- Caso del Jugador 1 ----------------------------%
 
-% ------------- Caso del Jugador 1 (Hay un Ganador)---------------%
-player_play([Board,Player1,Player2,CurrentTurn,History],Player,Column,NewGame):-
-    can_play(Board),
+% -------- Caso del Jugador 1 (Hay un Ganador o es empate)----------%
+player_play([Board,Player1,Player2,CurrentTurn,History],PlayerA,Column,NewGame2):-
     getIdPlayer(Player1,Id1),
-    getIdPlayer(Player,Id),
-    Id1==Id,
-    CurrentTurn==Id,
-    getColorPlayer(Player,Color),
-    play_piece(Board,Column,[Color,Id],NewBoard),
+    getIdPlayer(PlayerA,IdA),
+    Id1==IdA,
+    CurrentTurn==IdA,
+    getColorPlayer(PlayerA,Color),
+    append(Color,[IdA],Piece),
+    play_piece(Board,Column,Piece,NewBoard),
     update_pieces(Player1,NewPlayer1),
-    getIdPlayer2(Player2,Id2),
-    append(History,[Color,Id,Column],NewHistory),
-    who_is_winner(Board,Winner),
-    Winner\==0,
-    end_game([NewBoard,NewPlayer1,Player2,Id2,NewHistory],NewGame).
-
-% ------------- Caso del Jugador 1 (Es Empate)---------------%
-
-player_play([Board,Player1,Player2,CurrentTurn,History],Player,Column,NewGame):-
-    can_play(Board),
-    getIdPlayer(Player1,Id1),
-    getIdPlayer(Player,Id),
-    Id1==Id,
-    CurrentTurn==Id,
-    getColorPlayer(Player,Color),
-    play_piece(Board,Column,[Color,Id],NewBoard),
-    update_pieces(Player1,NewPlayer1),
-    getIdPlayer2(Player2,Id2),
-    append(History,[Color,Id,Column],NewHistory),
-    is_draw([NewBoard,NewPlayer1,Player2,Id2,NewHistory]),
-    end_game([NewBoard,NewPlayer1,Player2,Id2,NewHistory],NewGame).
-
+    getIdPlayer(Player2,Id2),
+    append(History,[[IdA,Column]],NewHistory),
+    NewGame1=[NewBoard,NewPlayer1,Player2,Id2,NewHistory],
+    end_game(NewGame1,NewGame2),
+    NewGame2\==NewGame1.
 
 
 % --------------- Caso Base del Jugador 1 ---------------------%
 
-player_play([Board,Player1,Player2,CurrentTurn,History],Player,Column,[NewBoard,NewPlayer1,Player2,Id2,NewHistory]):-
-    can_play(Board),
+player_play([Board,Player1,Player2,CurrentTurn,History],PlayerA,Column,NewGame):-
     getIdPlayer(Player1,Id1),
-    getIdPlayer(Player,Id),
-    Id1==Id,
-    CurrentTurn==Id,
-    getColorPlayer(Player,Color),
-    play_piece(Board,Column,[Color,Id],NewBoard),
+    getIdPlayer(PlayerA,IdA),
+    Id1==IdA,
+    CurrentTurn==IdA,
+    getColorPlayer(PlayerA,Color),
+    append(Color,[IdA],Piece),
+    play_piece(Board,Column,Piece,NewBoard),
     update_pieces(Player1,NewPlayer1),
-    getIdPlayer2(Player2,Id2),
-    append(History,[Color,Id,Column],NewHistory).
+    getIdPlayer(Player2,Id2),
+    append(History,[[IdA,Column]],NewHistory),
+    NewGame=[NewBoard,NewPlayer1,Player2,Id2,NewHistory].
 
 %---------------------------------------------------------------%
-
-%---------------- Caso del Jugador 2 (Hay un Ganador)---------------%
-
-player_play([Board,Player1,Player2,CurrentTurn,History],Player,Column,NewGame):-
+% -------- Caso del Jugador 2 (Hay un Ganador o es empate)----------%
+player_play([Board,Player1,Player2,CurrentTurn,History],PlayerA,Column,NewGame2):-
     can_play(Board),
     getIdPlayer(Player2,Id2),
-    getIdPlayer(Player,Id),
-    Id2==Id,
-    CurrentTurn==Id,
-    getColorPlayer(Player,Color),
-    play_piece(Board,Column,[Color,Id],NewBoard),
+    getIdPlayer(PlayerA,IdA),
+    Id2==IdA,
+    CurrentTurn==IdA,
+    getColorPlayer(PlayerA,Color),
+    append(Color,[IdA],Piece),
+    play_piece(Board,Column,Piece,NewBoard),
     update_pieces(Player2,NewPlayer2),
     getIdPlayer(Player1,Id1),
-    append(History,[Color,Id,Column],NewHistory),
-    who_is_winner(Board,Winner),
-    Winner\==0,
-    end_game([NewBoard,Player1,NewPlayer2,Id1,NewHistory],NewGame).
-
-
-% --------------- Caso Base del Jugador 2 (Es Empate)------------------%
-
-player_play([Board,Player1,Player2,CurrentTurn,History],Player,Column,NewGame):-
-    can_play(Board),
-    getIdPlayer(Player2,Id2),
-    getIdPlayer(Player,Id),
-    Id2==Id,
-    CurrentTurn==Id,
-    getColorPlayer(Player,Color),
-    play_piece(Board,Column,[Color,Id],NewBoard),
-    update_pieces(Player2,NewPlayer2),
-    getIdPlayer(Player1,Id1),
-    append(History,[Color,Id,Column],NewHistory),
-    is_draw([NewBoard,Player1,NewPlayer2,Id1,NewHistory]),
-    end_game([NewBoard,Player1,NewPlayer2,Id1,NewHistory],NewGame).
+    append(History,[[IdA,Column]],NewHistory),
+    NewGame1=[NewBoard,Player1,NewPlayer2,Id1,NewHistory],
+    end_game(NewGame1,NewGame2),
+    NewGame2\==NewGame1.
 
 
 
 
 % --------------- Caso Base del Jugador 2 -----------------%
-player_play([Board,Player1,Player2,CurrentTurn,History],Player,Column,[NewBoard,Player1,NewPlayer2,Id1,NewHistory]):-
+player_play([Board,Player1,Player2,CurrentTurn,History],PlayerA,Column,NewGame):-
     can_play(Board),
     getIdPlayer(Player2,Id2),
-    getIdPlayer(Player,Id),
-    Id2==Id,
-    CurrentTurn==Id,
-    getColorPlayer(Player,Color),
-    play_piece(Board,Column,[Color,Id],NewBoard),
+    getIdPlayer(PlayerA,IdA),
+    Id2==IdA,
+    CurrentTurn==IdA,
+    getColorPlayer(PlayerA,Color),
+    append(Color,[IdA],Piece),
+    play_piece(Board,Column,Piece,NewBoard),
     update_pieces(Player2,NewPlayer2),
-    getIdPlayer2(Player1,Id1),
-    append(History,[Color,Id,Column],NewHistory).
+    getIdPlayer(Player1,Id1),
+    append(History,[[IdA,Column]],NewHistory),
+    NewGame=[NewBoard,Player1,NewPlayer2,Id1,NewHistory].
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

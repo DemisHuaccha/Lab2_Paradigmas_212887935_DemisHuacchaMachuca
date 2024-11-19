@@ -76,10 +76,12 @@ board(Board):-
 % Dominio: TDa Board
 % Recorrido: booleano (#t / #f)
 
+
 can_play([C1|_]):-
     getF1(C1,F1),
     getJugadorB(F1,J1),
-    J1 == 0.
+    J1 == 0,
+    !.
 
 can_play([_|B2]):-
     can_play(B2).
@@ -263,8 +265,8 @@ horizontal_win(Board,Winner):-
 % arriba-abajo comenzando desde la la columna mas lejana (Columna 7)
 % hasta la primera columna
 %
-% Todas tiene una clausula auxiliar para recorrer y construir la
-% una diagonal especifica
+% Todas tiene una clausula auxiliar para recorrer y construir una
+% diagonal hasta que no se cumplan las restricciones
 
 
 primero(_,Y,_,[]):-
@@ -406,7 +408,7 @@ diagonal_win([A|B],Winner):-
     diagonales([A|B],Diagonales),
     diagonal_win2(Diagonales,Winner).
 
- %-------------------------diagonal_win---------------------------%
+ %-------------------------who_is_winner---------------------------%
 % who_is_winner verifica si existe una pieza que se
 % repita 4 veces consecutivamente y retorna el id del ganador
 % Dominio: Board (TDA board)
@@ -415,20 +417,28 @@ diagonal_win([A|B],Winner):-
 
 ganador(Winner1,_,_,Winner):-
     Winner1\==0,
-    Winner = Winner1.
+    Winner = Winner1,
+    !.
 ganador(_,Winner2,_,Winner):-
     Winner2\==0,
-    Winner = Winner2.
+    Winner = Winner2,
+    !.
 ganador(_,_,Winner3,Winner):-
     Winner3\==0,
-    Winner = Winner3.
-ganador(0,0,0,0).
+    Winner = Winner3,
+    !.
+ganador(0,0,0,0):-!.
 
 who_is_winner(Board,Winner):-
     vertical_win(Board,Winner1),
     horizontal_win(Board,Winner2),
     diagonal_win(Board,Winner3),
-    ganador(Winner1,Winner2,Winner3,Winner).
+    ganador(Winner1,Winner2,Winner3,Winner),
+    !.
+
+
+
+
 
 
 
