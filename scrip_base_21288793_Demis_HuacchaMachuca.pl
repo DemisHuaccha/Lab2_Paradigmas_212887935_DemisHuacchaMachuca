@@ -1,7 +1,7 @@
 
 :- use_module(tdapiece,[piece/2]).
 :- use_module(tdaplayer,[player/8]).
-:- use_module(tdaboard,[board/1,can_play/1,horizontal_win/2,vertical_win/2,diagonal_win/2,who_is_winner/2]).
+:- use_module(tdaboard,[board/1,can_play/1,check_horizontal_win/2,check_vertical_win/2,check_diagonal_win/2,who_is_winner/2]).
 :- use_module(tdagame,[game/5,is_draw/1, get_current_player/2, game_get_board/2, player_play/4]).
 :-set_prolog_flag(answer_write_options, [max_depth(0)]).
 
@@ -54,15 +54,15 @@ main:-
 
 % 7. Verificaciones de victoria
     write('Verificación de victoria vertical: '),
-    vertical_win(CurrentBoard, VerticalWinner),
+    check_vertical_win(CurrentBoard, VerticalWinner),
     write(VerticalWinner),
     nl,
     write('Verificación de victoria horizontal: '),
-    horizontal_win(CurrentBoard, HorizontalWinner),
+    check_horizontal_win(CurrentBoard, HorizontalWinner),
     write(HorizontalWinner),
     nl,
     write('Verificación de victoria diagonal: '),
-    diagonal_win(CurrentBoard, DiagonalWinner),
+    check_diagonal_win(CurrentBoard, DiagonalWinner),
     write(DiagonalWinner),
     nl,
     write('Verificación de ganador: '),

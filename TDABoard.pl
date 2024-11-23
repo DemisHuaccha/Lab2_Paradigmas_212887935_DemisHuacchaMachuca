@@ -1,4 +1,4 @@
-:-module(tdaboard,[obtener_columna/3,board/1,can_play/1,my_car/2,my_cdr/2,play_piece/4,horizontal_win/2,vertical_win/2,diagonal_win/2,who_is_winner/2,getC1/2,getC2/2,getC3/2,getC4/2,getC5/2,getC6/2,getC7/2]).
+:-module(tdaboard,[obtener_columna/3,board/1,can_play/1,my_car/2,my_cdr/2,play_piece/4,check_horizontal_win/2,check_vertical_win/2,check_diagonal_win/2,who_is_winner/2,getC1/2,getC2/2,getC3/2,getC4/2,getC5/2,getC6/2,getC7/2]).
 
 %GetC1que entrega la primera columna del TDA Board
 %Dominio : TDA board
@@ -174,17 +174,17 @@ repetido4([_|B],_,Winner):-
 
 
 
-vertical_win([],0):-!.
+check_vertical_win([],0):-!.
 
-vertical_win([Column|_],Winner):-
+check_vertical_win([Column|_],Winner):-
     repetido4(Column,1,Winner),
     Winner\==0,
     !.
 
-vertical_win([Column|B],Winner):-
+check_vertical_win([Column|B],Winner):-
     repetido4(Column,1,Winner2),
     Winner2==0,
-    vertical_win(B,Winner).
+    check_vertical_win(B,Winner).
 
 %-------------------------Fila y construir_filas-----------------------&
 %
@@ -238,7 +238,7 @@ horizontal_win2([Column|B],Winner):-
     horizontal_win2(B,Winner).
 
 
-horizontal_win(Board,Winner):-
+check_horizontal_win(Board,Winner):-
     construir_filas(Board,0,BoardFilas),
     horizontal_win2(BoardFilas,Winner).
 
@@ -406,7 +406,7 @@ diagonal_win2([Diagonal|B],Winner):-
     diagonal_win2(B,Winner).
 
 
-diagonal_win([A|B],Winner):-
+check_diagonal_win([A|B],Winner):-
     diagonales([A|B],Diagonales),
     diagonal_win2(Diagonales,Winner).
 
@@ -432,9 +432,9 @@ ganador(_,_,Winner3,Winner):-
 ganador(0,0,0,0):-!.
 
 who_is_winner(Board,Winner):-
-    vertical_win(Board,Winner1),
-    horizontal_win(Board,Winner2),
-    diagonal_win(Board,Winner3),
+    check_vertical_win(Board,Winner1),
+    check_horizontal_win(Board,Winner2),
+    check_diagonal_win(Board,Winner3),
     ganador(Winner1,Winner2,Winner3,Winner),
     !.
 
