@@ -1,4 +1,6 @@
-:-include("TDAPiece").
+
+:-module(tdaplayer,[getIdPlayer/2,getColorPlayer/2,getRemainingPiecesPlayer/2,player/8,update_pieces/2,update_wins/2,update_losses/2,update_draws/2]).
+
 
 %Funcion que entrega el primer elemento del TDA Player
 getIdPlayer([Id|_],Id).  %Dominio: TDA Player, Recorrido : int
@@ -45,16 +47,6 @@ player(Id, Name, Color, Wins, Losses, Draws, RemainingPieces, Player):-
 update_pieces([Id,Name,Color,Wins,Losses,Draws,Pieces],[Id,Name,Color,Wins,Losses,Draws,Pieces2]):-
     Pieces2 is Pieces-1.
 
-
-%---------------------------UpdateStats---------------------------%
-% Se toma al jugador y se actualiza sus datos de victoria,derrota o
-% empate
-%Dominio:TDA Game Recorrido: TDA Player
-
-%update_stats(Player,OdlStats,NewStasts):-
-
-
-
 % --------------------------update----------------------------------------%
 % Dominio: TDA Player
 % Recorrido: TDA Player
@@ -67,9 +59,6 @@ update_losses([Id,Name,Color,Wins,Losses|L],[Id,Name,Color,Wins,Losses2|L]):-
 
 update_draws([Id,Name,Color,Wins,Losses,Draws,Pieces],[Id,Name,Color,Wins,Losses,Draws2,Pieces]):-
     Draws2 is Draws+1.
-
-
-
 
 
 

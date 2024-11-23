@@ -1,3 +1,4 @@
+:-module(tdapiece,[piece/2,getColorPiece/2]).
 
 %Funcion que entrega el elemento de la lista TDA Piece
 %Dominio: TDA piece

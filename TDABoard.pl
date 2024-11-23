@@ -1,6 +1,6 @@
-:-include("TDAPlayer").
+:-module(tdaboard,[obtener_columna/3,board/1,can_play/1,my_car/2,my_cdr/2,play_piece/4,horizontal_win/2,vertical_win/2,diagonal_win/2,who_is_winner/2,getC1/2,getC2/2,getC3/2,getC4/2,getC5/2,getC6/2,getC7/2]).
 
-%getC1que entrega la primera columna del TDA Board
+%GetC1que entrega la primera columna del TDA Board
 %Dominio : TDA board
 %REcorrido: una lista (Columna)
 getC1([C1|_],C1).
@@ -76,11 +76,13 @@ board(Board):-
 % Dominio: TDa Board
 % Recorrido: booleano (#t / #f)
 
+my_member([A|_],A):-!.
+
+my_member([_|B],A):-
+    my_member(B,A).
 
 can_play([C1|_]):-
-    getF1(C1,F1),
-    getJugadorB(F1,J1),
-    J1 == 0,
+    my_member(C1,[0]),
     !.
 
 can_play([_|B2]):-
@@ -435,11 +437,6 @@ who_is_winner(Board,Winner):-
     diagonal_win(Board,Winner3),
     ganador(Winner1,Winner2,Winner3,Winner),
     !.
-
-
-
-
-
 
 
 
