@@ -1,4 +1,4 @@
-:-module(tdaboard,[obtener_columna/3,board/1,can_play/1,my_car/2,my_cdr/2,play_piece/4,check_horizontal_win/2,check_vertical_win/2,check_diagonal_win/2,who_is_winner/2,getC1/2,getC2/2,getC3/2,getC4/2,getC5/2,getC6/2,getC7/2]).
+:-module(tdaboard_21288793_HuacchaMachuca,[obtener_columna/3,board/1,can_play/1,my_car/2,my_cdr/2,play_piece/4,check_horizontal_win/2,check_vertical_win/2,check_diagonal_win/2,who_is_winner/2,getC1/2,getC2/2,getC3/2,getC4/2,getC5/2,getC6/2,getC7/2]).
 
 %GetC1que entrega la primera columna del TDA Board
 %Dominio : TDA board

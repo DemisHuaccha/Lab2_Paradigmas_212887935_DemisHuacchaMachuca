@@ -1,12 +1,11 @@
-
-:- use_module(tdapiece,[piece/2]).
-:- use_module(tdaplayer,[player/8]).
-:- use_module(tdaboard,[board/1,can_play/1,check_horizontal_win/2,check_vertical_win/2,check_diagonal_win/2,who_is_winner/2]).
-:- use_module(tdagame,[game/5,is_draw/1, get_current_player/2, game_get_board/2, player_play/4]).
+:- use_module(tdapiece_21288793_HuacchaMachuca,[piece/2]).
+:- use_module(tdaplayer_21288793_HuacchaMachuca,[player/8]).
+:- use_module(tdaboard_21288793_HuacchaMachuca,[board/1,can_play/1,check_horizontal_win/2,check_vertical_win/2,check_diagonal_win/2,who_is_winner/2]).
+:- use_module(tdagame_21288793_HuacchaMachuca,[game/5,is_draw/1, get_current_player/2, game_get_board/2, player_play/4,end_game/2,game_history/2]).
 :-set_prolog_flag(answer_write_options, [max_depth(0)]).
 
 
-main:-
+main0:-
 % 1.Crear jugadores (10 fichas cada uno para un juego corto)
     player(1, "Juan", "red", 0, 0, 0, 10, P1),
     player(2, "Mauricio", "yellow", 0, 0, 0, 10, P2),
@@ -69,13 +68,28 @@ main:-
     who_is_winner(CurrentBoard, Winner),
     write(Winner),
     nl,
+% 9. Finalizar juego y actualizar estadísticas
+   end_game(G11, EndedGame),
+
+% 10. Mostrar historial de movimientos
+   write('Historial de movimientos: '),
+   game_history(EndedGame, History),
+   write(History),
+   nl,
+
+% 11. Mostrar estado final del tablero
+   write('Estado final del tablero: '),
+   nl,
+   game_get_board(EndedGame, FinalBoard),
+   write(FinalBoard),
+   nl,
+
 
 % 8. Verificación de empate
     write('Es empate en el G11?'),
     !,
     is_draw(G11),
     nl.
-
 
 
 

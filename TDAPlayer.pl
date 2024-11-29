@@ -1,5 +1,5 @@
 
-:-module(tdaplayer,[getIdPlayer/2,getColorPlayer/2,getRemainingPiecesPlayer/2,player/8,update_pieces/2,update_wins/2,update_losses/2,update_draws/2]).
+:-module(tdaplayer_21288793_HuacchaMachuca,[getIdPlayer/2,getColorPlayer/2,getRemainingPiecesPlayer/2,player/8,update_pieces/2,update_wins/2,update_losses/2,update_draws/2]).
 
 
 %Funcion que entrega el primer elemento del TDA Player

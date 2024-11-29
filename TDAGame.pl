@@ -1,8 +1,8 @@
-:-module(tdagame,[game_history/2,game/5,is_draw/1, get_current_player/2, game_get_board/2, game_get_board2/1, update_stats/3, player_play/4, end_game/2,getPlayer1G/2,getPlayer2G/2,getCurrentTurnG/2,getBoardG/2]).
+:-module(tdagame_21288793_HuacchaMachuca,[game_history/2,game/5,is_draw/1, get_current_player/2, game_get_board/2, game_get_board2/1, update_stats/3, player_play/4, end_game/2,getPlayer1G/2,getPlayer2G/2,getCurrentTurnG/2,getBoardG/2]).
 
-:-use_module(tdaboard,[can_play/1,play_piece/4,who_is_winner/2,getC1/2,getC2/2,getC3/2,getC4/2,getC5/2,getC6/2,getC7/2]).
+:-use_module(tdaboard_21288793_HuacchaMachuca,[can_play/1,play_piece/4,who_is_winner/2,getC1/2,getC2/2,getC3/2,getC4/2,getC5/2,getC6/2,getC7/2]).
 
-:-use_module(tdaplayer,[getIdPlayer/2,getColorPlayer/2,getRemainingPiecesPlayer/2,update_pieces/2,update_wins/2,update_losses/2,update_draws/2]).
+:-use_module(tdaplayer_21288793_HuacchaMachuca,[getIdPlayer/2,getColorPlayer/2,getRemainingPiecesPlayer/2,update_pieces/2,update_wins/2,update_losses/2,update_draws/2]).
 
 
 getBoardG([Board|_],Board).
@@ -187,7 +187,7 @@ player_play([Board,Player1,Player2,CurrentTurn,History],PlayerA,Column,NewGame):
     getIdPlayer(Player2,Id2),
     append(History,[[IdA,Column]],NewHistory),
     NewGame1=[NewBoard,NewPlayer1,Player2,Id2,NewHistory],
-    once(end_game(NewGame1,NewGame)).
+    end_game(NewGame1,NewGame).
 
 % --------------- Caso del Jugador 2 -----------------%
 player_play([Board,Player1,Player2,CurrentTurn,History],PlayerA,Column,NewGame):-
@@ -203,7 +203,7 @@ player_play([Board,Player1,Player2,CurrentTurn,History],PlayerA,Column,NewGame):
     getIdPlayer(Player1,Id1),
     append(History,[[IdA,Column]],NewHistory),
     NewGame2=[NewBoard,Player1,NewPlayer2,Id1,NewHistory],
-    once(end_game(NewGame2,NewGame)).
+    end_game(NewGame2,NewGame).
 
 
 
