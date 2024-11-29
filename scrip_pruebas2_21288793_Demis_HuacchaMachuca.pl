@@ -18,7 +18,7 @@ main2:-
     write(GoldenPiece),
     nl,
 
-% 3. Crear tablero inicial vacío
+% 3. Crear tablero inicial vacÃ­o
     board(EmptyBoard),
 % 4. Crear nuevo juego
     game(P1, P2, EmptyBoard, 1, G0),
@@ -42,20 +42,20 @@ main2:-
     player_play(G14, P1, 3, G15),    % Ana  juega en columna 3
     player_play(G15, P2, 3, G16),    % Roberto  juega en columna 3
     player_play(G16, P1, 1, G17),    % Ana  juega en columna 1
-    player_play(G17, P2, 4, G18),    % Roberto  juega en columna 4, victoria horizontal
+    player_play(G17, P2, 6, G18),    % Roberto  juega en columna 4, victoria horizontal
 
 % 6. Verificaciones del estado del juego
-    write('¿Se puede jugar en el tablero vacío? '),
+    write('Â¿Se puede jugar en el tablero vacÃ­o? '),
     !,
     can_play(EmptyBoard),
-    % Si se puede seguir jugando, el programa continuará
+    % Si se puede seguir jugando, el programa continuarÃ¡
     nl,
     game_get_board(G18, CurrentBoard),
-    write('Jugador actual después de 18 movimientos: '),
+    write('Jugador actual despuÃ©s de 18 movimientos: '),
     get_current_player(G18, CurrentPlayer),
     write(CurrentPlayer),
     nl,
-    write('¿Se puede jugar después de 18 movimientos? '),
+    write('Â¿Se puede jugar despuÃ©s de 18 movimientos? '),
     !,
     can_play(CurrentBoard),
     nl,
@@ -63,24 +63,24 @@ main2:-
 
 
 % 7. Verificaciones de victoria
-    write('Verificación de victoria vertical: '),
+    write('VerificaciÃ³n de victoria vertical: '),
     check_vertical_win(CurrentBoard, VerticalWinner),
     write(VerticalWinner),
     nl,
-    write('Verificación de victoria horizontal: '),
+    write('VerificaciÃ³n de victoria horizontal: '),
     check_horizontal_win(CurrentBoard, HorizontalWinner),
     write(HorizontalWinner),
     nl,
-    write('Verificación de victoria diagonal: '),
+    write('VerificaciÃ³n de victoria diagonal: '),
     check_diagonal_win(CurrentBoard, DiagonalWinner),
     write(DiagonalWinner),
     nl,
-    write('Verificación de ganador: '),
+    write('VerificaciÃ³n de ganador: '),
     who_is_winner(CurrentBoard, Winner),
     write(Winner),
     nl,
 
-% 9. Finalizar juego y actualizar estadísticas
+% 9. Finalizar juego y actualizar estadÃ­sticas
    end_game(G18, EndedGame),
 
 % 10. Mostrar historial de movimientos
@@ -97,7 +97,7 @@ main2:-
    nl,
 
 
-% 8. Verificación de empate por tablero lleno
+% 8. VerificaciÃ³n de empate por tablero lleno
 
     write('Es empate en el G18?'),
     !,
